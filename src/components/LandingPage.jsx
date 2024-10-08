@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import './App.css'; // for styling
+import './LandingPage.css'; // for styling
+import { useNavigate } from 'react-router-dom';
 
 function App() {
   const [name, setName] = useState('');
@@ -8,6 +9,7 @@ function App() {
   const [handicappedType, setHandicappedType] = useState('');
   const [language, setLanguage] = useState('');
   const [wantsMotherTongue, setWantsMotherTongue] = useState(false);
+  const navigate = useNavigate();
 
   const handleCategoryClick = (category) => {
     setAgeGroup(category);
@@ -21,7 +23,8 @@ function App() {
   };
 
   const handleSubmit = () => {
-    alert(`Name: ${name}, Age Group: ${ageGroup}, Handicapped: ${isHandicapped}, Type: ${handicappedType}, Language: ${language}, Wants Mother Tongue: ${wantsMotherTongue}`);
+    //alert(`Name: ${name}, Age Group: ${ageGroup}, Handicapped: ${isHandicapped}, Type: ${handicappedType}, Language: ${language}, Wants Mother Tongue: ${wantsMotherTongue}`);
+    navigate('/home');
   };
 
   return (
@@ -45,21 +48,21 @@ function App() {
           className={`category ${ageGroup === 'Kids' ? 'selected' : ''}`} 
           onClick={() => handleCategoryClick('Kids')}
         >
-          <img src="/Kids.png" alt="Kids" className="category-image" />
+          <img src="/Kids.jpeg" alt="Kids" className="category-image" />
           <p>Kids</p>
         </div>
         <div 
           className={`category ${ageGroup === 'Uneducated' ? 'selected' : ''}`} 
           onClick={() => handleCategoryClick('Uneducated')}
         >
-          <img src="/Adult.png" alt="Uneducated" className="category-image" />
+          <img src="/Adult.jpeg" alt="Uneducated" className="category-image" />
           <p>Uneducated</p>
         </div>
         <div 
           className={`category ${ageGroup === 'Old People' ? 'selected' : ''}`} 
           onClick={() => handleCategoryClick('Old People')}
         >
-          <img src="/Oldman.png" alt="Old People" className="category-image" />
+          <img src="/Oldman.jpeg" alt="Old People" className="category-image" />
           <p>Old People</p>
         </div>
       </div>
