@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import langConfig from "../config/langConfig.json";
 
+
 const Home = () => {
   const [url, setUrl] = useState("");
   const [content, setContent] = useState("");
@@ -13,6 +14,7 @@ const Home = () => {
   const actionRef = useRef(langConfig[language].actions);
   useEffect(() => {
     langRef.current = language;
+    console.log(actionRef.current)
     actionRef.current = langConfig[language].actions;
   }, [language]);
 
@@ -117,6 +119,7 @@ const Home = () => {
     }
   };
 
+
   const translateParagraph = async (text, targetLanguage) => {
     try {
       const response = await fetch("http://localhost:5000/translate", {
@@ -136,6 +139,7 @@ const Home = () => {
     }
   };
 
+
   // New function to get summary
   const getSummary = async (text) => {
     try {
@@ -147,7 +151,7 @@ const Home = () => {
         body: JSON.stringify({ text }),
       });
       const summary = await response.text();
-
+      
       // Show summary in a popup
       setPopupContent(summary);
       setIsPopupVisible(true);
@@ -159,7 +163,12 @@ const Home = () => {
   const addButtons = () => {
     // Remove existing buttons, if any
     const existingButtons = document.querySelectorAll("button");
-    existingButtons.forEach((btn) => btn.remove());
+    existingButtons.forEach((btn) => {
+      if (!['start', 'stop', 'fetch'].includes(btn.id)) {
+        btn.remove();
+      }
+    });
+    
 
     // Select all relevant text-containing elements (paragraphs)
     const textElements = document.querySelectorAll("#content p");
@@ -280,8 +289,10 @@ const Home = () => {
   };
 
   const closePopup = () => {
-    setIsPopupVisible(false);
+    setIsPopupVisible(false); // Close the popup
   };
+
+
 
   useEffect(() => {
     if (content) {
@@ -291,7 +302,9 @@ const Home = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-8">
-      <h1 className="text-3xl font-bold mb-4 text-center">Accezy</h1>
+      <h1 className="text-3xl font-bold mb-4 text-center">
+        Fetch and Speak Webpage Content
+      </h1>
 
       <form onSubmit={handleSubmit} className="w-full max-w-lg">
         <div className="flex items-center border-b border-teal-500 py-2">
@@ -299,18 +312,20 @@ const Home = () => {
             type="text"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
             placeholder="Enter URL"
+            className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
           />
           <button
+            id="fetch"
             type="submit"
-            className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 text-sm text-white py-2 px-4 rounded"
+            className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 text-white font-bold py-1 px-2 rounded"
           >
             Fetch
           </button>
         </div>
         <div className="mt-2 flex items-center justify-center">
-          <button
+        <button
+            id="start"
             type="button"
             onClick={startListening}
             className="ml-2 flex-shrink-0 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
@@ -318,24 +333,19 @@ const Home = () => {
             🎤 Start Listening
           </button>
           <button
+            id="stop"
             type="button"
             onClick={stopListening}
             className="ml-2 flex-shrink-0 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
           >
             🛑 Stop Listening
           </button>
-        </div>
-        <div className="flex mt-2 items-center justify-center"></div>
-
-        <div className="mt-4">
-          <label htmlFor="language" className="mr-2">
-            Select Language:
-          </label>
+          </div>
+        <div className="flex mt-2 items-center justify-center">
           <select
-            id="language"
             value={language}
             onChange={handleLanguageChange}
-            className="p-2 rounded bg-white border"
+            className="bg-white border rounded py-2 px-4 mr-2"
           >
             <option value="en-US">English (US)</option>
             <option value="hi-IN">Hindi</option>
@@ -350,24 +360,20 @@ const Home = () => {
           </select>
         </div>
       </form>
-      <div
-        id="content"
-        className="mt-8 p-4 bg-white rounded shadow-md w-full px-4 overflow-auto"
-        dangerouslySetInnerHTML={{ __html: content }}
-      ></div>
 
-      {/* Popup for translation */}
+      <div id="content" className="mt-8 w-full">
+        {content && <div dangerouslySetInnerHTML={{ __html: content }} />}
+      </div>
+
+      {/* Popup for displaying translations or summaries */}
       {isPopupVisible && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded shadow-lg relative">
-            <button
-              className="absolute top-2 right-2 text-red-500"
-              onClick={closePopup}
-            >
-              ✖️
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded shadow-lg relative mx-4 md:mx-0 md:w-3/4 lg:w-3/4">
+            <h2 className="text-lg font-bold">Output</h2>
+            <p>{popupContent}</p>
+            <button onClick={closePopup} className="mt-4 bg-gray-200 p-2 rounded">
+              Close
             </button>
-            <h2 className="text-xl font-semibold">Translation</h2>
-            <p className="mt-4">{popupContent}</p>
           </div>
         </div>
       )}

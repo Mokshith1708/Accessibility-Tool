@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../static/LandingPage.css'; // for styling
+import '../static/LandingPage.css';
 import { useNavigate } from 'react-router-dom';
 
 function LandingPage() {
@@ -18,7 +18,7 @@ function LandingPage() {
   const handleHandicappedChange = (answer) => {
     setIsHandicapped(answer);
     if (answer === 'No') {
-      setHandicappedType(''); // Reset handicapped type if they choose No
+      setHandicappedType(''); // Reset handicapped type if "No" is selected
     }
   };
 
@@ -29,38 +29,38 @@ function LandingPage() {
   return (
     <div className="LandingPage">
       {/* App Name */}
-    <h1 className="app-name">Accezy</h1>
+      <h1 className="app-name">Accezy</h1>
       <h1>Choose Your Details</h1>
 
       {/* Name Input */}
       <div className="name-input">
-        <input 
-          type="text" 
-          className="name-input-field" 
-          placeholder="Enter your name" 
-          value={name} 
-          onChange={(e) => setName(e.target.value)} 
+        <input
+          type="text"
+          className="name-input-field"
+          placeholder="Enter your name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
         />
       </div>
 
       {/* Age Group Selection */}
       <div className="categories">
-        <div 
-          className={`category ${ageGroup === 'Kids' ? 'selected' : ''}`} 
+        <div
+          className={`category ${ageGroup === 'Kids' ? 'selected' : ''}`}
           onClick={() => handleCategoryClick('Kids')}
         >
           <img src="/Kids.jpeg" alt="Kids" className="category-image" />
           <p>Kids</p>
         </div>
-        <div 
-          className={`category ${ageGroup === 'Uneducated' ? 'selected' : ''}`} 
+        <div
+          className={`category ${ageGroup === 'Uneducated' ? 'selected' : ''}`}
           onClick={() => handleCategoryClick('Uneducated')}
         >
           <img src="/Adult.jpeg" alt="Uneducated" className="category-image" />
           <p>Uneducated</p>
         </div>
-        <div 
-          className={`category ${ageGroup === 'Old People' ? 'selected' : ''}`} 
+        <div
+          className={`category ${ageGroup === 'Old People' ? 'selected' : ''}`}
           onClick={() => handleCategoryClick('Old People')}
         >
           <img src="/Oldman.jpeg" alt="Old People" className="category-image" />
@@ -71,14 +71,14 @@ function LandingPage() {
       {/* Physically Handicapped Question */}
       <div className="handicap-question">
         <h2>Are you physically handicapped?</h2>
-        <button 
-          className={`handicap-button ${isHandicapped === 'Yes' ? 'selected' : ''}`} 
+        <button
+          className={`handicap-button ${isHandicapped === 'Yes' ? 'selected' : ''}`}
           onClick={() => handleHandicappedChange('Yes')}
         >
           Yes
         </button>
-        <button 
-          className={`handicap-button ${isHandicapped === 'No' ? 'selected' : ''}`} 
+        <button
+          className={`handicap-button ${isHandicapped === 'No' ? 'selected' : ''}`}
           onClick={() => handleHandicappedChange('No')}
         >
           No
@@ -86,8 +86,8 @@ function LandingPage() {
 
         {/* Dropdown for Handicapped Type */}
         {isHandicapped === 'Yes' && (
-          <select 
-            value={handicappedType} 
+          <select
+            value={handicappedType}
             onChange={(e) => setHandicappedType(e.target.value)}
             className="handicapped-type-dropdown"
           >
@@ -96,7 +96,6 @@ function LandingPage() {
             <option value="Deaf">Deaf</option>
             <option value="Physically Disabled">Physically Disabled</option>
             <option value="Speech Impairment">Speech Impairment</option>
-            {/* Add more options as needed */}
           </select>
         )}
       </div>
@@ -104,9 +103,9 @@ function LandingPage() {
       {/* Language Selection */}
       <div className="language-selection">
         <h2>Which language will you speak?</h2>
-        <select 
-          value={language} 
-          onChange={(e) => setLanguage(e.target.value)} 
+        <select
+          value={language}
+          onChange={(e) => setLanguage(e.target.value)}
           className="language-dropdown"
         >
           <option value="">Select a language</option>
@@ -126,14 +125,14 @@ function LandingPage() {
       {/* Mother Tongue Question */}
       <div className="mother-tongue-question">
         <h2>Would you like to view the webpage in your mother tongue?</h2>
-        <button 
-          className={`mother-tongue-button ${wantsMotherTongue ? 'selected' : ''}`} 
+        <button
+          className={`mother-tongue-button ${wantsMotherTongue ? 'selected' : ''}`}
           onClick={() => setWantsMotherTongue(true)}
         >
           Yes
         </button>
-        <button 
-          className={`mother-tongue-button ${!wantsMotherTongue ? 'selected' : ''}`} 
+        <button
+          className={`mother-tongue-button ${!wantsMotherTongue ? 'selected' : ''}`}
           onClick={() => setWantsMotherTongue(false)}
         >
           No
@@ -141,7 +140,9 @@ function LandingPage() {
       </div>
 
       {/* Submit Button */}
-      <button className="submit-button" onClick={handleSubmit}>Submit</button>
+      <button className="submit-button" onClick={handleSubmit}>
+        Submit
+      </button>
     </div>
   );
 }

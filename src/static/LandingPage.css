@@ -1,152 +1,175 @@
-.LandingPage .body {
-  margin: 0;
-  font-family: 'Arial', sans-serif;
-  background: linear-gradient(to right, #e0f7fa, #b2ebf2); /* Light gradient background */
+/* Scoped CSS using the LandingPage class to prevent global application */
+
+.LandingPage {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(to right, #e0f7fa, #b2ebf2);
   color: #333;
-  padding: 20px; /* Added padding for smaller screens */
+  padding: 20px;
   box-sizing: border-box;
 }
 
-.LandingPage {
-  background-color: white;
-  border-radius: 12px; /* Rounded corners */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Shadow for depth */
-  border: 2px solid #1976d2; /* Blue border */
-  padding: 40px; /* Increased padding for more space inside the container */
-  max-width: 1200px; /* Increased max-width to make the container bigger */
-  width: 100%;
-  text-align: center;
-  box-sizing: border-box; /* Ensures padding doesn't affect width */
+.LandingPage h1 {
+  font-size: 36px;
+  margin-bottom: 20px; /* Reduced bottom margin for better spacing */
+  color: #1976d2;
+  text-align: center; /* Center the title */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Add subtle text shadow */
 }
 
-.app-name {
+.LandingPage .app-name {
   font-size: 48px;
   font-weight: bold;
   color: #1976d2;
   margin-bottom: 20px;
+  text-align: center; /* Center the app name */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Add subtle text shadow */
 }
 
-.LandingPage .h1 {
-  font-size: 36px; /* Increased title size */
-  margin-bottom: 30px; /* More space */
-  color: #1976d2;
+.LandingPage .name-input {
+  margin-bottom: 20px; /* Adjust margin */
+  width: 100%; /* Make input full width */
+  max-width: 800px; /* Limit maximum width */
+  display: flex;
+  flex-direction: column; /* Flexbox to stack elements vertically */
+  align-items: center; /* Center align items */
 }
 
-.name-input {
-  margin-bottom: 30px; /* More space between fields */
-}
-
-.name-input-field {
-  padding: 16px; /* Larger input field */
+.LandingPage .name-input-field {
+  padding: 16px;
   width: 100%;
-  max-width: 800px; /* Increased max width for input fields */
   border: 2px solid #1976d2;
   border-radius: 4px;
-  font-size: 20px; /* Larger font size */
+  font-size: 20px;
+  box-sizing: border-box; /* Ensure padding is included in width */
+  transition: border-color 0.3s ease; /* Add transition for border color */
 }
 
-.categories {
+.LandingPage .name-input-field:focus {
+  outline: none; /* Remove default outline */
+  border-color: #1565c0; /* Change border color on focus */
+}
+
+.LandingPage .categories {
   display: flex;
-  justify-content: space-around;
-  margin-bottom: 40px; /* Increased margin for more space */
-  gap: 20px; /* Space between categories */
-  flex-wrap: wrap; /* Wrap on smaller screens */
+  justify-content: center; /* Center categories */
+  margin-bottom: 40px;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
-.category {
+.LandingPage .category {
   cursor: pointer;
   text-align: center;
   flex: 1;
   margin: 10px;
-  padding: 20px; /* More padding for bigger category boxes */
+  padding: 20px;
   border: 2px solid transparent;
   border-radius: 8px;
   transition: all 0.3s ease;
-  max-width: 220px; /* Increased size of categories */
+  max-width: 220px;
+  background-color: #ffffff; /* White background for categories */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow */
 }
 
-.category:hover {
+.LandingPage .category:hover {
   border-color: #1976d2;
+  transform: translateY(-5px); /* Slight lift effect on hover */
 }
 
-.category.selected {
+.LandingPage .category.selected {
   border-color: #1976d2;
   background-color: #e3f2fd;
 }
 
-.category-image {
-  width: 100px; /* Increased image size */
+.LandingPage .category-image {
+  width: 100px;
   height: 100px;
 }
 
-.handicap-question, 
-.language-selection, 
-.mother-tongue-question {
-  margin: 30px 0; /* More spacing */
+.LandingPage .handicap-question,
+.LandingPage .language-selection,
+.LandingPage .mother-tongue-question {
+  margin: 30px 0;
   text-align: center;
 }
 
-.handicap-button, 
-.mother-tongue-button {
+.LandingPage .handicap-button,
+.LandingPage .mother-tongue-button {
   background-color: white;
   border: 2px solid #1976d2;
   border-radius: 4px;
-  padding: 15px 30px; /* Larger buttons */
-  margin: 0 20px; /* Increased spacing between buttons */
+  padding: 15px 30px;
+  margin: 0 20px;
   cursor: pointer;
-  font-size: 18px; /* Larger text for better visibility */
+  font-size: 18px;
   transition: all 0.3s ease;
 }
 
-.handicap-button:hover, 
-.mother-tongue-button:hover {
+.LandingPage .handicap-button:hover,
+.LandingPage .mother-tongue-button:hover {
+  background-color: #1976d2;
+  color: white;
+  transform: translateY(-2px); /* Lift effect on hover */
+}
+
+.LandingPage .handicap-button.selected,
+.LandingPage .mother-tongue-button.selected {
   background-color: #1976d2;
   color: white;
 }
 
-.handicap-button.selected, 
-.mother-tongue-button.selected {
-  background-color: #1976d2;
-  color: white;
-}
-
-.handicapped-type-dropdown,
-.language-dropdown {
-  width: 100%;
-  max-width: 800px; /* Increased width for dropdowns */
-  padding: 16px; /* Larger padding for dropdowns */
+.LandingPage .handicapped-type-dropdown,
+.LandingPage .language-dropdown {
+  padding: 10px;
+  font-size: 18px;
   border: 2px solid #1976d2;
   border-radius: 4px;
-  margin-top: 10px;
-  font-size: 18px; /* Increased font size */
+  margin-top: 15px;
+  width: 100%; /* Make dropdown full width */
+  max-width: 800px; /* Limit maximum width */
+  transition: border-color 0.3s ease; /* Add transition for border color */
 }
 
-.submit-button {
+.LandingPage .handicapped-type-dropdown:focus,
+.LandingPage .language-dropdown:focus {
+  outline: none; /* Remove default outline */
+  border-color: #1565c0; /* Change border color on focus */
+}
+
+.LandingPage .submit-button {
   background-color: #1976d2;
   color: white;
+  font-size: 22px;
+  padding: 15px 30px;
   border: none;
-  border-radius: 4px;
-  padding: 15px 40px; /* Larger button */
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 22px; /* Increased font size */
+  margin-top: 40px;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow */
 }
 
-.submit-button:hover {
-  background-color: #0d47a1;
+.LandingPage .submit-button:hover {
+  background-color: #1565c0;
+  transform: translateY(-2px); /* Lift effect on hover */
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .categories {
-    flex-direction: column;
+/* Media Queries for Responsiveness */
+@media (max-width: 600px) {
+  .LandingPage .name-input-field,
+  .LandingPage .handicapped-type-dropdown,
+  .LandingPage .language-dropdown,
+  .LandingPage .submit-button {
+    width: 90%; /* Make elements full width on small screens */
   }
-  
-  .category {
-    max-width: 100%; /* Full width on small screens */
+
+  .LandingPage .category {
+    flex: 1 0 45%; /* Allow two categories per row on small screens */
   }
 }
