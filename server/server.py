@@ -5,7 +5,6 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from models.image2text import generate_description
 from googletrans import Translator
-# from models.image2text import process_image
 
 app = Flask(__name__)
 

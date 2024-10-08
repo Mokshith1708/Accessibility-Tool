@@ -5,7 +5,6 @@ const Home = () => {
   const [content, setContent] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [language, setLanguage] = useState("en-US");
-  const [translations, setTranslations] = useState({}); // State to store translations
   const [popupContent, setPopupContent] = useState(""); // State to manage popup content
   const [isPopupVisible, setIsPopupVisible] = useState(false); // State for popup visibility
 
@@ -134,7 +133,7 @@ const Home = () => {
     }
   };
 
-  const translateParagraph = async (text, targetLang, index) => {
+  const translateParagraph = async (text, targetLang) => {
     try {
       const response = await fetch("http://localhost:5000/translate", {
         method: "POST",
@@ -144,10 +143,6 @@ const Home = () => {
         body: JSON.stringify({ text, target_lang: targetLang }),
       });
       const translatedText = await response.text();
-      setTranslations((prev) => ({
-        ...prev,
-        [index]: translatedText,
-      }));
 
       // Show popup after translation
       setPopupContent(translatedText); // Set the content for the popup
@@ -157,9 +152,9 @@ const Home = () => {
     }
   };
 
-  const addSpeakerButtons = () => {
+  const addButtons = () => {
     const paragraphs = document.querySelectorAll("#content p");
-    paragraphs.forEach((p, index) => {
+    paragraphs.forEach((p) => {
       if (!p.classList.contains("speaker-added")) {
         const speakerButton = document.createElement("button");
         speakerButton.innerHTML = "🔊";
@@ -194,7 +189,8 @@ const Home = () => {
         translateButton.onclick = async function () {
           const targetLang = prompt("Enter target language code (e.g., 'en', 'hi', 'te'):");
           if (targetLang) {
-            await translateParagraph(p.innerText, targetLang, index);
+            console.log(p.innerText)
+            await translateParagraph(p.innerText, targetLang);
           }
         };
         p.insertAdjacentElement("afterend", translateButton);
@@ -233,7 +229,7 @@ const Home = () => {
 
   useEffect(() => {
     if (content) {
-      addSpeakerButtons();
+      addButtons();
       addClickListener();
     }
   }, [content]);
