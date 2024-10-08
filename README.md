@@ -90,13 +90,71 @@ These groups face real barriers to accessing essential information, and existing
 
 Once the system is running, access the web interface to interact with web content through simplified reports, glossary definitions, infographics, audio narrations, and more.
 
-- 
+- First you will be entering into the web interface where your name , category, physically disability, mother tongue. Please enter the following information and move forward.
+- You will be asked to enter the link of the website you want to run this tool on. Please enter the link of that website.
+( We mainly focussed on text and image intensive websites like wikipedia, geeks for geeks and medium. More websites will be made accessible in the future.)
+- After giving the link of the website you will be redirected to that website with our toold running on it. There we will have different options like:
+    - First we can select the language in which we want our website to use in furthur features.
+    - For every paragraph we will be having a speaker which speaks out the content.
+    - We will also have a translator button for every paragraph on clicking which gives the content in the selected language.
+    - We also have a summarize button for every paragraph on clicking which gives the summarized content.
+    - Every picture will have a star symbol on clicking which gives the description of the pisture
+    - We also have a voice command which can be used to give commands in different languages. But for now we have limited commands. Also please make sure that the command has the given words. (Only Scroll-up and Scroll-down for now).
+        -  "en-US": {
+            "scroll_down": ["scroll down"],
+            "scroll_up": ["scroll up"]
+          },
+        - "hi-IN": {
+            "scroll_down": ["नीचे स्क्रॉल करें", "नीचे"],
+            "scroll_up": ["ऊपर स्क्रॉल करें", "ऊपर"]
+          },
+         - "te-IN": {
+            "scroll_down": ["క్రిందికి స్క్రోల్ చేయి", "క్రిందకి"],
+            "scroll_up": ["పైకి స్క్రోల్ చేయి", "పైకి"]
+          },
+        -  "ta-IN": {
+            "scroll_down": ["கீழே ஸ்க்ரோல் செய்", "கீழே"],
+            "scroll_up": ["மேலே ஸ்க்ரோல் செய்", "மேலே"]
+          },
+        -  "kn-IN": {
+            "scroll_down": ["ಕೆಳಗೆ ಸ್ಕ್ರೋಲ್ ಮಾಡಿ", "ಕೆಳಗೆ"],
+            "scroll_up": ["ಮೇಲೆ ಸ್ಕ್ರೋಲ್ ಮಾಡಿ", "ಮೇಲೆ"]
+          },
+        -  "ml-IN": {
+            "scroll_down": ["താഴേക്ക് സ്ക്രോൾ ചെയ്യുക", "താഴേക്ക്"],
+            "scroll_up": ["മുകളിലേക്ക് സ്ക്രോൾ ചെയ്യുക", "മുകളിലേക്ക്"]
+          },
+        -  "gu-IN": {
+            "scroll_down": ["નીચે સ્ક્રોલ કરો", "નીચે"],
+            "scroll_up": ["ઉપર સ્ક્રોલ કરો", "ઉપર"]
+          },
+         - "bn-IN": {
+            "scroll_down": ["নিচে স্ক্রোল করুন", "নিচে"],
+            "scroll_up": ["উপর স্ক্রোল করুন", "উপর"]
+          },
+        -  "mr-IN": {
+            "scroll_down": ["खाली स्क्रोल करा", "खाली"],
+            "scroll_up": ["वर स्क्रोल करा", "वर"]
+          },
+         - "pa-IN": {
+            "scroll_down": ["ਥੱਲੇ ਸਕ੍ਰੋਲ ਕਰੋ", "ਥੱਲੇ"],
+            "scroll_up": ["ਉੱਪਰ ਸਕ੍ਰੋਲ ਕਰੋ", "ਉੱਪਰ"]
+          }
+  
+  
+
+- Note:
+    - After clicking the summarizer button we need to wait for some time before the summary is displayed as the model takes some time to generate the summary. Same case will translate but it is much faster than the summarizer.
 
 ## Future Enhancements
 
 - **Advanced AI Models**: Improving the accuracy of language simplification and image descriptions.
 - **Expanded Language Support**: Increasing the range of supported languages.
 - **New Features**: New features like glossary generation, infographics generation, audio amplification and more.
+- Add more voice commands.
+- Enhance UI/UX.
+- Make the speaker speak in different languages.
+ 
 
 ## Team Members
 
