@@ -152,6 +152,26 @@ const Home = () => {
     }
   };
 
+  // New function to get summary
+  const getSummary = async (text) => {
+    try {
+      const response = await fetch("http://localhost:5000/summarize", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text }),
+      });
+      const summary = await response.text();
+      
+      // Show summary in a popup
+      setPopupContent(summary);
+      setIsPopupVisible(true);
+    } catch (error) {
+      console.error("Error summarizing text:", error);
+    }
+  };
+
   const addButtons = () => {
     const paragraphs = document.querySelectorAll("#content p");
     paragraphs.forEach((p) => {
@@ -189,11 +209,27 @@ const Home = () => {
         translateButton.onclick = async function () {
           const targetLang = prompt("Enter target language code (e.g., 'en', 'hi', 'te'):");
           if (targetLang) {
-            console.log(p.innerText)
+            console.log(p.innerText);
             await translateParagraph(p.innerText, targetLang);
           }
         };
         p.insertAdjacentElement("afterend", translateButton);
+
+        // Adding summary button
+        const summaryButton = document.createElement("button");
+        summaryButton.innerHTML = "📝 Summary";
+        summaryButton.classList.add(
+          "summary",
+          "ml-2",
+          "cursor-pointer",
+          "text-orange-600",
+          "hover:text-orange-800"
+        );
+        summaryButton.onclick = async function () {
+          console.log("Getting summary for:", p.innerText);
+          await getSummary(p.innerText);
+        };
+        p.insertAdjacentElement("afterend", summaryButton);
       }
     });
   };
@@ -246,67 +282,58 @@ const Home = () => {
             type="text"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
             placeholder="Enter URL"
+            className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
           />
           <button
             type="submit"
-            className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 text-sm text-white py-2 px-4 rounded"
+            className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 text-white font-bold py-1 px-2 rounded"
           >
             Fetch
           </button>
         </div>
+        <div className="mt-2 flex items-center justify-center">
+        <button
+            type="button"
+            onClick={startListening}
+            className="ml-2 flex-shrink-0 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
+          >
+            🎤 Start Listening
+          </button>
+          <button
+            type="button"
+            onClick={stopListening}
+            className="ml-2 flex-shrink-0 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+          >
+            🛑 Stop Listening
+          </button>
+          </div>
+        <div className="flex mt-2 items-center justify-center">
+          <select
+            value={language}
+            onChange={handleLanguageChange}
+            className="bg-white border rounded py-2 px-4 mr-2"
+          >
+            <option value="en-US">English</option>
+            <option value="hi-IN">Hindi</option>
+            <option value="te-IN">Telugu</option>
+          </select>
+        </div>
       </form>
 
-
-      <div className="mt-4">
-        <label htmlFor="language" className="mr-2">
-          Select Language:
-        </label>
-        <select
-          id="language"
-          value={language}
-          onChange={handleLanguageChange}
-          className="p-2 rounded bg-white border"
-        >
-          <option value="en-US">English (US)</option>
-          <option value="hi-IN">Hindi</option>
-          <option value="te-IN">Telugu</option>
-        </select>
+      <div id="content" className="mt-8 w-full">
+        {content && <div dangerouslySetInnerHTML={{ __html: content }} />}
       </div>
-      <button
-        onClick={() => {
-          setIsListening(!isListening);
-          if (!isListening) {
-            startListening();
-            setIsListening(true);
-          } else {
-            stopListening();
-          }
-        }}
-        className={`mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded`}
-      >
-        {isListening ? "Stop Listening" : "Start Listening"}
-      </button>
 
-      <div
-        id="content"
-        className="mt-8 p-4 bg-white rounded shadow-md w-full px-4 overflow-auto"
-        dangerouslySetInnerHTML={{ __html: content }}
-      ></div>
-
-      {/* Popup for translation */}
+      {/* Popup for displaying translations or summaries */}
       {isPopupVisible && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded shadow-lg relative">
-            <button
-              className="absolute top-2 right-2 text-red-500"
-              onClick={closePopup}
-            >
-              ✖️
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded shadow-lg relative mx-4 md:mx-0 md:w-3/4 lg:w-3/4">
+            <h2 className="text-lg font-bold">Output</h2>
+            <p>{popupContent}</p>
+            <button onClick={closePopup} className="mt-4 bg-gray-200 p-2 rounded">
+              Close
             </button>
-            <h2 className="text-xl font-semibold">Translation</h2>
-            <p className="mt-4">{popupContent}</p>
           </div>
         </div>
       )}
