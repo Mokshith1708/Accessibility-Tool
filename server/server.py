@@ -5,12 +5,16 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from models.image2text import generate_description
 from googletrans import Translator
+from transformers import pipeline
 
 app = Flask(__name__)
 
 CORS(app, methods=['GET', 'POST', 'OPTIONS'], allow_headers=['Content-Type'], resources={r"/*": {"origins": "http://localhost:3000"}})
 
 translator = Translator()  # Initialize the Google Translator
+
+# Initialize the summarizer using the BART model
+summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
 
 # Function to fetch and return the HTML from a given URL
 def fetch_and_render_url(url):
@@ -21,24 +25,15 @@ def fetch_and_render_url(url):
         # Parse the HTML with BeautifulSoup
         soup = BeautifulSoup(response.content, 'html.parser')
 
-        # modify relative to absolute paths
-        # handle mw-deduplicated-inline-style
-        for link in soup.find_all('link', href=True): 
+        # Modify relative to absolute paths
+        for link in soup.find_all('link', href=True):
             link['href'] = urljoin(url, link['href'])
 
-        # for script in soup.find_all('script', src=True):
-        #     script['src'] = urljoin(url, script['src'])
-
         for img in soup.find_all('img', src=True):
-            
-            # handle static sources
             if img['src'].startswith('/static'):
                 img['src'] = urljoin(url, img['src'])
 
-            # handle protocol relative URLs starts with '//' for external sources would work fine
-
-        # need to check later
-        for a in soup.find_all('a',href=True):
+        for a in soup.find_all('a', href=True):
             a['onclick'] = "event.preventDefault();"
             a['href'] = urljoin(url, a['href'])
 
@@ -50,7 +45,7 @@ def fetch_and_render_url(url):
 
 @app.route('/', methods=['POST'])
 def index():
-    url = request.json.get('url')  # Assuming we're sending JSON from React
+    url = request.json.get('url')
     if url:
         html_content, content_type = fetch_and_render_url(url)
         return Response(html_content, content_type=content_type)
@@ -65,13 +60,12 @@ def process_image():
             return jsonify({"error": "No image URL provided."}), 400
 
         image_url = data['image']
-        # print(image_url)
 
         # Fetch the image from the URL
         response = requests.get(image_url)
-        response.raise_for_status()  # Raise an error if the request failed
+        response.raise_for_status()
 
-        description = generate_description(response)  # Ensure your process_image function can handle URLs
+        description = generate_description(response)
 
         return jsonify({"description": description})
 
@@ -90,6 +84,30 @@ def translate_text():
         except Exception as e:
             return Response(f"Translation error: {str(e)}", status=400)
     return Response("Invalid input", status=400)
+
+# Endpoint to summarize text
+@app.route('/summarize', methods=['POST'])
+def summarize_text():
+    try:
+        data = request.get_json()
+        if 'text' not in data:
+            return jsonify({"error": "No text provided."}), 400
+
+        text = data['text']
+
+        # Function to split large text into smaller chunks if needed
+        def chunk_text(text, chunk_size=400):
+            return [text[i:i + chunk_size] for i in range(0, len(text), chunk_size)]
+
+        # Summarize each chunk and combine the summaries
+        text_chunks = chunk_text(text)
+        summaries = [summarizer(chunk, max_length=50, min_length=20, do_sample=False)[0]['summary_text'] for chunk in text_chunks]
+        final_summary = ' '.join(summaries)
+
+        return  Response(final_summary, content_type='text/plain')
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
