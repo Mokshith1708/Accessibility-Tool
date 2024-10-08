@@ -7,7 +7,7 @@ from models.image2text import generate_description
 from googletrans import Translator
 from transformers import pipeline
 
-app = Flask(_name_)
+app = Flask(__name__)
 
 CORS(app, methods=['GET', 'POST', 'OPTIONS'], allow_headers=['Content-Type'], resources={r"/*": {"origins": "http://localhost:3000"}})
 
@@ -109,5 +109,5 @@ def summarize_text():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-if _name_ == '_main_':
+if __name__ == '__main__':
     app.run(debug=True)
