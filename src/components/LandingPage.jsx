@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import './LandingPage.css'; // for styling
+import '../static/LandingPage.css'; // for styling
 import { useNavigate } from 'react-router-dom';
 
-function App() {
+function LandingPage() {
   const [name, setName] = useState('');
   const [ageGroup, setAgeGroup] = useState('');
   const [isHandicapped, setIsHandicapped] = useState(null);
@@ -23,12 +23,13 @@ function App() {
   };
 
   const handleSubmit = () => {
-    //alert(`Name: ${name}, Age Group: ${ageGroup}, Handicapped: ${isHandicapped}, Type: ${handicappedType}, Language: ${language}, Wants Mother Tongue: ${wantsMotherTongue}`);
     navigate('/home');
   };
 
   return (
-    <div className="App">
+    <div className="LandingPage">
+      {/* App Name */}
+    <h1 className="app-name">Accezy</h1>
       <h1>Choose Your Details</h1>
 
       {/* Name Input */}
@@ -119,7 +120,6 @@ function App() {
           <option value="Malayalam">Malayalam</option>
           <option value="Punjabi">Punjabi</option>
           <option value="Kannada">Kannada</option>
-          {/* Removed Urdu and Odia */}
         </select>
       </div>
 
@@ -146,4 +146,4 @@ function App() {
   );
 }
 
-export default App;
+export default LandingPage;

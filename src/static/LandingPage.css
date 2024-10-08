@@ -1,0 +1,152 @@
+.LandingPage .body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(to right, #e0f7fa, #b2ebf2); /* Light gradient background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: #333;
+  padding: 20px; /* Added padding for smaller screens */
+  box-sizing: border-box;
+}
+
+.LandingPage {
+  background-color: white;
+  border-radius: 12px; /* Rounded corners */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Shadow for depth */
+  border: 2px solid #1976d2; /* Blue border */
+  padding: 40px; /* Increased padding for more space inside the container */
+  max-width: 1200px; /* Increased max-width to make the container bigger */
+  width: 100%;
+  text-align: center;
+  box-sizing: border-box; /* Ensures padding doesn't affect width */
+}
+
+.app-name {
+  font-size: 48px;
+  font-weight: bold;
+  color: #1976d2;
+  margin-bottom: 20px;
+}
+
+.LandingPage .h1 {
+  font-size: 36px; /* Increased title size */
+  margin-bottom: 30px; /* More space */
+  color: #1976d2;
+}
+
+.name-input {
+  margin-bottom: 30px; /* More space between fields */
+}
+
+.name-input-field {
+  padding: 16px; /* Larger input field */
+  width: 100%;
+  max-width: 800px; /* Increased max width for input fields */
+  border: 2px solid #1976d2;
+  border-radius: 4px;
+  font-size: 20px; /* Larger font size */
+}
+
+.categories {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 40px; /* Increased margin for more space */
+  gap: 20px; /* Space between categories */
+  flex-wrap: wrap; /* Wrap on smaller screens */
+}
+
+.category {
+  cursor: pointer;
+  text-align: center;
+  flex: 1;
+  margin: 10px;
+  padding: 20px; /* More padding for bigger category boxes */
+  border: 2px solid transparent;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  max-width: 220px; /* Increased size of categories */
+}
+
+.category:hover {
+  border-color: #1976d2;
+}
+
+.category.selected {
+  border-color: #1976d2;
+  background-color: #e3f2fd;
+}
+
+.category-image {
+  width: 100px; /* Increased image size */
+  height: 100px;
+}
+
+.handicap-question, 
+.language-selection, 
+.mother-tongue-question {
+  margin: 30px 0; /* More spacing */
+  text-align: center;
+}
+
+.handicap-button, 
+.mother-tongue-button {
+  background-color: white;
+  border: 2px solid #1976d2;
+  border-radius: 4px;
+  padding: 15px 30px; /* Larger buttons */
+  margin: 0 20px; /* Increased spacing between buttons */
+  cursor: pointer;
+  font-size: 18px; /* Larger text for better visibility */
+  transition: all 0.3s ease;
+}
+
+.handicap-button:hover, 
+.mother-tongue-button:hover {
+  background-color: #1976d2;
+  color: white;
+}
+
+.handicap-button.selected, 
+.mother-tongue-button.selected {
+  background-color: #1976d2;
+  color: white;
+}
+
+.handicapped-type-dropdown,
+.language-dropdown {
+  width: 100%;
+  max-width: 800px; /* Increased width for dropdowns */
+  padding: 16px; /* Larger padding for dropdowns */
+  border: 2px solid #1976d2;
+  border-radius: 4px;
+  margin-top: 10px;
+  font-size: 18px; /* Increased font size */
+}
+
+.submit-button {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 15px 40px; /* Larger button */
+  cursor: pointer;
+  font-size: 22px; /* Increased font size */
+  transition: all 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #0d47a1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .categories {
+    flex-direction: column;
+  }
+  
+  .category {
+    max-width: 100%; /* Full width on small screens */
+  }
+}
