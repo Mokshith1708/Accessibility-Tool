@@ -117,6 +117,23 @@ const Home = () => {
     }
   };
 
+  // Function to send the image source to the backend for description
+  const getImageDescription = async (imageUrl) => {
+    try {
+      const response = await fetch("http://localhost:5000/process-image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ image: imageUrl }), // Send the image URL as payload
+      });
+      const data = await response.json();
+      console.log("Image description:", data.description); // Handle/display the description
+    } catch (error) {
+      console.error("Error sending image for description:", error);
+    }
+  };
+
   const translateParagraph = async (text, targetLang, index) => {
     try {
       const response = await fetch("http://localhost:5000/translate", {
@@ -190,19 +207,27 @@ const Home = () => {
   };
 
   const addClickListener = () => {
-    const links = document.querySelectorAll("#content a");
-    links.forEach((link) => {
-      link.onclick = function (event) {
-        event.preventDefault();
-        console.log("clicked");
-      };
-    });
-
+    // Select all images
     const images = document.querySelectorAll("#content img");
     images.forEach((img) => {
-      img.onclick = function (event) {
-        console.log("clicked on image");
-      };
+      if (img.src.includes("//upload") && !img.classList.contains("star-added")) {
+        const starButton = document.createElement("button");
+        starButton.innerHTML = "⭐"; // Star button for image
+        starButton.classList.add(
+          "star-button",
+          "ml-2",
+          "cursor-pointer",
+          "text-yellow-500"
+        );
+
+        starButton.onclick = function () {
+          console.log("clicked on image: ", img.src); // Log when the image is clicked
+          getImageDescription(img.src); // Pass the image source to the backend for description
+        };
+
+        img.insertAdjacentElement("beforeBegin", starButton); // Add star button before the image
+        img.classList.add("star-added");
+      }
     });
   };
 

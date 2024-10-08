@@ -1,13 +1,15 @@
-from flask import Flask, request, Response
+from flask import Flask, jsonify, request, Response
 from flask_cors import CORS
 import requests
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
+from models.image2text import generate_description
 from googletrans import Translator
 # from models.image2text import process_image
 
 app = Flask(__name__)
-CORS(app)  # This will enable CORS for all routes
+
+CORS(app, methods=['GET', 'POST', 'OPTIONS'], allow_headers=['Content-Type'], resources={r"/*": {"origins": "http://localhost:3000"}})
 
 translator = Translator()  # Initialize the Google Translator
 
@@ -16,20 +18,30 @@ def fetch_and_render_url(url):
     try:
         # Fetch the content from the URL
         response = requests.get(url)
-        response.raise_for_status()  # Raise an error for bad responses
-
+        response.raise_for_status()  # Raise an error for bad response
         # Parse the HTML with BeautifulSoup
         soup = BeautifulSoup(response.content, 'html.parser')
 
-        # Update the links (CSS, JS, IMG) to use absolute paths
-        for link in soup.find_all('link', href=True):
+        # modify relative to absolute paths
+        # handle mw-deduplicated-inline-style
+        for link in soup.find_all('link', href=True): 
             link['href'] = urljoin(url, link['href'])
 
-        for script in soup.find_all('script', src=True):
-            script['src'] = urljoin(url, script['src'])
+        # for script in soup.find_all('script', src=True):
+        #     script['src'] = urljoin(url, script['src'])
 
         for img in soup.find_all('img', src=True):
-            img['src'] = urljoin(url, img['src'])
+            
+            # handle static sources
+            if img['src'].startswith('/static'):
+                img['src'] = urljoin(url, img['src'])
+
+            # handle protocol relative URLs starts with '//' for external sources would work fine
+
+        # need to check later
+        for a in soup.find_all('a',href=True):
+            a['onclick'] = "event.preventDefault();"
+            a['href'] = urljoin(url, a['href'])
 
         # Return the modified HTML content
         return str(soup), response.headers.get('Content-Type', 'text/html')
@@ -45,6 +57,28 @@ def index():
         return Response(html_content, content_type=content_type)
     return Response("No URL provided", content_type='text/plain')
 
+@app.route('/process-image', methods=['POST'])
+def process_image():
+    try:
+        data = request.get_json()
+
+        if 'image' not in data:
+            return jsonify({"error": "No image URL provided."}), 400
+
+        image_url = data['image']
+        # print(image_url)
+
+        # Fetch the image from the URL
+        response = requests.get(image_url)
+        response.raise_for_status()  # Raise an error if the request failed
+
+        description = generate_description(response)  # Ensure your process_image function can handle URLs
+
+        return jsonify({"description": description})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 # Endpoint to handle translations
 @app.route('/translate', methods=['POST'])
 def translate_text():
@@ -57,17 +91,6 @@ def translate_text():
         except Exception as e:
             return Response(f"Translation error: {str(e)}", status=400)
     return Response("Invalid input", status=400)
-
-# @app.route('/process-image', methods=['POST'])
-# def upload_image():
-#     if 'image' not in request.files:
-#         return Response("No image uploaded", status=400)
-
-#     image_file = request.files['image']
-
-#     description = process_image(image_file)
-
-#     return Response({"description": description}, content_type='application/json')
 
 if __name__ == '__main__':
     app.run(debug=True)
