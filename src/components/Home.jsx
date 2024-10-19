@@ -150,11 +150,11 @@ const Home = () => {
         },
         body: JSON.stringify({ text }),
       });
-      const summary = await response.text();
-      
-      // Show summary in a popup
-      setPopupContent(summary);
-      setIsPopupVisible(true);
+      const res = await response.text();
+      await translateParagraph(
+        res,
+        langRef.current.slice(0, 2)
+      );
     } catch (error) {
       console.error("Error summarizing text:", error);
     }
