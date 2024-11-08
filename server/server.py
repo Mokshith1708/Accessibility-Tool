@@ -103,10 +103,11 @@ def summarize_text():
         text_chunks = chunk_text(text)
         summaries = [summarizer(chunk, max_length=50, min_length=20, do_sample=False)[0]['summary_text'] for chunk in text_chunks]
         final_summary = ' '.join(summaries)
-
+        print(text,"output",final_summary)
         return  Response(final_summary, content_type='text/plain')
 
     except Exception as e:
+        print(text,"sum err")
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
