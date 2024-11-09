@@ -1,5 +1,4 @@
 import requests
-from huggingface_hub import InferenceClient
 from flask import jsonify
 
 # Hugging Face Inference API URL for BLIP Image Captioning
@@ -45,8 +44,9 @@ def generate_description(image_url):
             caption = api_response.json()[0]['generated_text']
             return caption
         else:
-            # print(f"Error from API: {api_response.status_code}, {api_response.text}")
+            print(f"Error from API: {api_response.status_code}, {api_response.text}")
             return jsonify({"error": f"Error from API: {api_response.status_code}, {api_response.text}"}), 500
     except Exception as e:
-        # print(" processss foio")
+        print(" processss foio")
         return jsonify({"error": str(e)}), 500
+    # Hugging Face Inference API URL for BLIP Image Captioning
