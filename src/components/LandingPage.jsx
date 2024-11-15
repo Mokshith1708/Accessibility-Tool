@@ -8,46 +8,74 @@ function LandingPage() {
   const [handicappedType, setHandicappedType] = useState('');
   const [language, setLanguage] = useState('');
   const [wantsMotherTongue, setWantsMotherTongue] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
+  const handleCategoryClick = (category) => {
+    setAgeGroup(category);
+  };
+
+  const handleHandicappedChange = (answer) => {
+    setIsHandicapped(answer);
+    if (answer === 'No') setHandicappedType('');
+  };
+
   const handleSubmit = () => {
+    if (!name) {
+      setErrorMessage('Please enter your name.');
+      return;
+    }
+    setErrorMessage('');
     navigate('/home');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-orange-50 flex flex-col items-center py-10 px-4">
+    <div className="min-h-screen bg-gradient-to-b from-indigo-500 to-purple-600 flex flex-col items-center justify-center text-white relative">
       {/* Header */}
-      <header className="mb-8 text-center">
-        <h1 className="text-6xl font-extrabold text-orange-600 mb-3 drop-shadow-md">
-          Welcome to Accezy
-        </h1>
-        <p className="text-lg text-gray-700 shadow-sm">
-          Personalize your experience by providing some details.
-        </p>
-      </header>
-
-      {/* Form */}
-      <form className="w-full max-w-3xl bg-white shadow-2xl rounded-xl p-8 space-y-8 border border-gray-200">
-        {/* Name Input */}
-        <div className="space-y-2">
-          <label className="block text-lg font-medium text-gray-800">Your Name</label>
+      <header className="absolute top-0 left-0 w-full flex justify-between items-center p-6 bg-opacity-90 bg-indigo-700 text-gray-200 shadow-md">
+        <div className="ml-6 font-bold text-lg">Accezy</div>
+        <nav className="flex space-x-6 mr-6">
+          <a href="#" className="hover:text-white transition">Features</a>
+          <a href="#" className="hover:text-white transition">Contact</a>
+          <a href="#" className="hover:text-white transition">Help</a>
           <input
             type="text"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow focus:ring-orange-500 focus:border-orange-500 text-md"
+            placeholder="Search..."
+            className="px-4 py-1 rounded-full text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          />
+        </nav>
+      </header>
+
+      {/* Main Content */}
+      <main className="text-center px-4 mt-20">
+        <h1 className="text-5xl font-extrabold mb-4">Customize Your Experience</h1>
+        <p className="text-xl mb-6">Please provide your details to get started!</p>
+      </main>
+
+      {/* Form Section */}
+      <form className="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8 space-y-6 text-gray-900">
+        {errorMessage && <p className="text-red-500 text-sm mb-4">{errorMessage}</p>}
+
+        {/* Name Input */}
+        <div>
+          <label className="block text-lg font-medium mb-2">Name</label>
+          <input
+            type="text"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
             placeholder="Enter your name"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
         </div>
 
-        {/* Age Group */}
-        <div className="space-y-4">
-          <label className="block text-lg font-medium text-gray-800">Select Your Age Group</label>
+        {/* Age Group Selection */}
+        <div>
+          <label className="block text-lg font-medium mb-4">Select Your Age Group</label>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
-              { name: 'Kids', img: '/images/kids.jpg' },
-              { name: 'Uneducated', img: '/images/uneducated.jpg' },
-              { name: 'Old People', img: '/images/old_people.jpg' },
+              { name: 'Kids', img: '/Kids.jpeg' },
+              { name: 'Uneducated', img: '/Adult.jpeg' },
+              { name: 'Old People', img: '/Oldman.jpeg' },
             ].map((category) => (
               <button
                 key={category.name}
@@ -70,9 +98,9 @@ function LandingPage() {
           </div>
         </div>
 
-        {/* Physically Handicapped */}
-        <div className="space-y-4">
-          <label className="block text-lg font-medium text-gray-800">Are you physically handicapped?</label>
+        {/* Physically Handicapped Question */}
+        <div>
+          <label className="block text-lg font-medium mb-4">Are you physically handicapped?</label>
           <div className="flex gap-4">
             {['Yes', 'No'].map((answer) => (
               <button
@@ -80,10 +108,10 @@ function LandingPage() {
                 type="button"
                 className={`px-6 py-3 rounded-lg shadow-md font-medium ${
                   isHandicapped === answer
-                    ? 'bg-orange-600 text-white'
-                    : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
+                    ? 'bg-indigo-600 text-white'
+                    : 'bg-white border-gray-300 hover:bg-indigo-100 hover:border-indigo-500'
                 } transition`}
-                onClick={() => setIsHandicapped(answer)}
+                onClick={() => handleHandicappedChange(answer)}
               >
                 {answer}
               </button>
@@ -94,7 +122,7 @@ function LandingPage() {
               <select
                 value={handicappedType}
                 onChange={(e) => setHandicappedType(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow focus:ring-orange-500 focus:border-orange-500 text-md"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
               >
                 <option value="">Select type of handicap</option>
                 <option value="Blind">Blind</option>
@@ -106,27 +134,16 @@ function LandingPage() {
           )}
         </div>
 
-        {/* Language */}
-        <div className="space-y-2">
-          <label className="block text-lg font-medium text-gray-800">Preferred Language</label>
+        {/* Language Selection */}
+        <div>
+          <label className="block text-lg font-medium mb-2">Which language do you prefer?</label>
           <select
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow focus:ring-orange-500 focus:border-orange-500 text-md"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
           >
             <option value="">Select a language</option>
-            {[
-              'Hindi',
-              'English',
-              'Bengali',
-              'Tamil',
-              'Telugu',
-              'Marathi',
-              'Gujarati',
-              'Malayalam',
-              'Punjabi',
-              'Kannada',
-            ].map((lang) => (
+            {['Hindi', 'English', 'Bengali', 'Tamil', 'Telugu', 'Marathi', 'Gujarati', 'Malayalam', 'Punjabi', 'Kannada'].map((lang) => (
               <option key={lang} value={lang}>
                 {lang}
               </option>
@@ -134,11 +151,9 @@ function LandingPage() {
           </select>
         </div>
 
-        {/* Mother Tongue */}
-        <div className="space-y-4">
-          <label className="block text-lg font-medium text-gray-800">
-            Would you like to view the webpage in your mother tongue?
-          </label>
+        {/* Mother Tongue Question */}
+        <div>
+          <label className="block text-lg font-medium mb-4">Would you like to view the webpage in your mother tongue?</label>
           <div className="flex gap-4">
             {['Yes', 'No'].map((answer, index) => (
               <button
@@ -146,8 +161,8 @@ function LandingPage() {
                 type="button"
                 className={`px-6 py-3 rounded-lg shadow-md font-medium ${
                   wantsMotherTongue === (answer === 'Yes')
-                    ? 'bg-orange-600 text-white'
-                    : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
+                    ? 'bg-indigo-600 text-white'
+                    : 'bg-white border-gray-300 hover:bg-indigo-100 hover:border-indigo-500'
                 } transition`}
                 onClick={() => setWantsMotherTongue(answer === 'Yes')}
               >
@@ -161,13 +176,16 @@ function LandingPage() {
         <div className="text-center">
           <button
             type="button"
-            className="w-full px-6 py-3 bg-orange-600 text-white rounded-lg font-medium shadow-lg hover:bg-orange-700 transition"
+            className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium shadow-md hover:bg-indigo-700 transition"
             onClick={handleSubmit}
           >
             Submit
           </button>
         </div>
       </form>
+
+      {/* Background Pattern */}
+      <div className="absolute inset-0 bg-indigo-800 opacity-10 pointer-events-none"></div>
     </div>
   );
 }
