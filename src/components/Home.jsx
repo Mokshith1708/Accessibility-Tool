@@ -230,27 +230,81 @@ const Home = () => {
         );
       };
 
-      // Adding summary button
-      const summaryButton = document.createElement("button");
-      summaryButton.innerHTML = `📝  ${actionRef.current[3]}`;
-      summaryButton.classList.add(
-        "summary",
-        "ml-2",
-        "cursor-pointer",
-        "text-orange-600",
-        "hover:text-orange-800",
-        "bg-orange-100",
-        "px-3",
-        "py-1",
-        "rounded",
-        "transition",
-        "duration-200",
-        "ease-in-out"
-      );
-      summaryButton.onclick = async function () {
-        // console.log("Getting summary for:", element.innerText);
-        await getSummary(element.innerText);
-      };
+    // Adding summary button
+    const summaryButton = document.createElement("button");
+    summaryButton.innerHTML = `📝 Show Summary`;
+    summaryButton.classList.add(
+      "summary",
+      "ml-2",
+      "cursor-pointer",
+      "text-orange-600",
+      "hover:text-orange-800",
+      "bg-orange-100",
+      "px-3",
+      "py-1",
+      "rounded",
+      "transition",
+      "duration-200",
+      "ease-in-out"
+    );
+
+    // Spinner element for loading state
+    const spinner = document.createElement("span");
+    spinner.classList.add("spinner", "hidden"); // Initially hidden
+
+    // Add spinner to button
+    summaryButton.appendChild(spinner);
+
+    // Toggle state for summary visibility
+    let showSummary = false;
+
+    summaryButton.onclick = async function () {
+      // Toggle the summary display state
+      showSummary = !showSummary;
+
+      // Show the spinner while fetching the summary
+      spinner.classList.remove("hidden");
+      summaryButton.innerHTML = `⏳ Loading...`;
+
+      // Check if the summary is already displayed
+      const existingSummary = element.nextElementSibling;
+      if (
+        existingSummary &&
+        existingSummary.classList.contains("summary-box")
+      ) {
+        // Remove the existing summary if it exists
+        existingSummary.remove();
+        spinner.classList.add("hidden"); // Hide spinner after removal
+        summaryButton.innerHTML = `📝 Show Summary`; // Reset button text
+      } else {
+        // Fetch and display the summary
+        const res = await getSummary(element.innerText);
+
+        // Create a new div element with a bounding box for the summary
+        const paragraph = document.createElement("div");
+        paragraph.textContent = res;
+        paragraph.classList.add(
+          "summary-box",
+          "mt-4",
+          "mb-4",
+          "p-4",
+          "bg-orange-50",
+          "border",
+          "border-orange-200",
+          "rounded-lg",
+          "shadow-md",
+          "text-gray-800",
+          "max-w-fit"
+        );
+
+        // Insert the paragraph after `element`
+        element.insertAdjacentElement("afterend", paragraph);
+
+        // Hide spinner and update button text after summary is shown
+        spinner.classList.add("hidden");
+        summaryButton.innerHTML = `❌ Close Summary`;
+      }
+    };
 
       // Append the buttons after the paragraph element
       element.insertAdjacentElement("afterend", speakerButton);
