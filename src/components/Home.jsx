@@ -7,10 +7,10 @@ const Home = () => {
   const [content, setContent] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [language, setLanguage] = useState("en");
-  const [zoomLevel, setZoomLevel] = useState(1); 
-  const [previewZoom, setPreviewZoom] = useState(1);  
-  const [popupContent, setPopupContent] = useState(""); 
-  const [isPopupVisible, setIsPopupVisible] = useState(false); 
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [previewZoom, setPreviewZoom] = useState(1);
+  const [popupContent, setPopupContent] = useState("");
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
 
   const langRef = useRef(language);
   useEffect(() => {
@@ -174,7 +174,7 @@ const Home = () => {
       });
       const data = await response.json();
       console.log(data);
-      setPopupContent(data.description)
+      setPopupContent(data.description);
       setIsPopupVisible(true);
     } catch (error) {
       console.error("Error sending image for description:", error);
@@ -390,90 +390,126 @@ const Home = () => {
   }, [content, language]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-8">
-      <h1 className="text-3xl font-bold mb-4 text-center">Accezy</h1>
-      <div className="flex flex-col lg:flex-row justify-center items-start w-full max-w-6xl mx-auto">
-                <form onSubmit={handleSubmit} className="w-full max-w-lg">
-                  <div className="flex items-center border-b border-teal-500 py-2">
-                    <input
-                      type="text"
-                      value={url}
-                      onChange={(e) => setUrl(e.target.value)}
-                      placeholder="Enter URL"
-                      className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
-                    />
-                    <button
-                      id="fetch"
-                      type="submit"
-                      className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 text-white font-bold py-1 px-2 rounded"
-                    >
-                      Fetch
-                    </button>
-                  </div>
-                  <div className="mt-2 flex items-center justify-center">
-                      <button
-                        type="button"
-                        id="speech"
-                        onClick={isListening ? stopListening : startListening}
-                        className={`ml-2 flex-shrink-0 ${
-                          isListening
-                            ? "bg-red-500 hover:bg-red-700"
-                            : "bg-blue-500 hover:bg-blue-700"
-                        } text-white font-bold py-1 px-2 rounded`}
-                      >
-                        {isListening ? "🛑 Stop Listening" : "🎤 Start Listening"}
-                      </button>
-                   </div>
-                    { content &&
-                      <div className="flex mt-4 items-center justify-center">
-                        <div className="mt-4 flex flex-col items-center">
-                          <p>Drag the slider with mouse to zoom in and zoom out</p>
-                          <input
-                            id="zoom-slider"
-                            type="range"
-                            min="0.5"
-                            max="2"
-                            step="0.01"
-                            value={zoomLevel}
-                            onChange={(e) => setZoomLevel(parseFloat(e.target.value))}
-                            className="w-full max-w-md"
-                          />
-                        </div>
-                      </div>
-                      }
-                 </form>
-                {/* Instruction Box */}
-                  <div className="w-full lg:w-1/4 mt-4 lg:mt-0 lg:ml-6 bg-gray-100 border border-gray-300 rounded p-4 shadow">
-                    <h2 className="text-sm font-bold mb-2">Instructions</h2>
-                    <ul className="text-xs list-disc pl-4">
-                      <li>🔍 Enter a URL to fetch content.</li>
-                      <li>🎤 Use "Start Listening" for voice commands.</li>
-                      <li>🛑 Use "Stop Listening" to disable voice commands.</li>
-                      <li>📊 Adjust zoom level with the slider below.</li>
-                    </ul>
-                    <h2 className="text-sm font-bold mb-2">Voice commands</h2>
-                    <ul className="text-xs list-disc pl-4">
-                      <li>Scroll up</li>
-                      <li>Scroll down</li>
-                    </ul>
-                  </div>
+    <div className="min-h-screen flex flex-col bg-gray-100">
+      {/* Header Section */}
+      <div className="sticky top-0 bg-white shadow-md z-10 p-4">
+        {/* Title */}
+        <h1 className="text-2xl font-bold text-center text-teal-600">
+            Accezy
+          </h1>
+        <div className="flex flex-col lg:flex-row items-start justify-between w-full max-w-6xl mx-auto space-y-4 lg:space-y-0 lg:space-x-4 p-4">
+
+          {/* Form Section */}
+          <form
+            onSubmit={handleSubmit}
+            className="flex-grow w-full max-w-lg bg-gray-50 shadow-sm rounded-md p-3"
+          >
+            <div className="flex items-center border-b border-teal-500 py-1">
+              <input
+                type="text"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="Enter URL"
+                className="appearance-none bg-transparent border-none w-full text-gray-700 py-1 px-2 leading-tight focus:outline-none text-sm"
+              />
+              <button
+                id="fetch"
+                type="submit"
+                className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 text-white font-bold py-1 px-3 text-sm rounded"
+              >
+                Fetch
+              </button>
+            </div>
+            <div className="mt-3 flex items-center justify-center">
+              <button
+                type="button"
+                id="speech"
+                onClick={isListening ? stopListening : startListening}
+                className={`ml-2 flex-shrink-0 ${
+                  isListening
+                    ? "bg-red-500 hover:bg-red-700"
+                    : "bg-blue-500 hover:bg-blue-700"
+                } text-white font-bold py-1 px-2 text-sm rounded`}
+              >
+                {isListening ? "🛑 Stop Listening" : "🎤 Start Listening"}
+              </button>
+            </div>
+            {content && (
+              <div className="flex mt-3 items-center justify-center">
+                <div className="flex flex-col items-center">
+                  <p className="text-xs text-gray-600">
+                    Drag the slider to zoom in and out
+                  </p>
+                  <input
+                    id="zoom-slider"
+                    type="range"
+                    min="0.5"
+                    max="2"
+                    step="0.01"
+                    value={zoomLevel}
+                    onChange={(e) => setZoomLevel(parseFloat(e.target.value))}
+                    className="w-full max-w-md mt-1"
+                  />
+                </div>
+              </div>
+            )}
+          </form>
+
+          {/* Instruction and Translate Section */}
+          <div className="w-full lg:w flex flex-col lg:flex-row items-start space-y-4 lg:space-y-0 lg:space-x-4">
+            {/* Instruction Box */}
+            <div className="flex-1 lg:flex-[2] bg-gray-50 border border-gray-300 rounded-md p-3 shadow-sm">
+              <h2 className="text-base font-semibold mb-1">Instructions</h2>
+              <ul className="text-xs list-disc pl-4">
+                <li>🔍 Enter a URL to fetch content.</li>
+                <li>🎤 Use "Start Listening" for voice commands.</li>
+                <li>🛑 Use "Stop Listening" to disable voice commands.</li>
+                <li>📊 Adjust zoom level with the slider below.</li>
+              </ul>
+              <h2 className="text-base font-semibold mt-3 mb-1">
+                Voice Commands
+              </h2>
+              <ul className="text-xs list-disc pl-4">
+                <li>Scroll up</li>
+                <li>Scroll down</li>
+              </ul>
+            </div>
+
+            {/* Google Translate */}
+            <div className="flex-1 lg:flex-[1]">
+              <GoogleTranslate />
+            </div>
+          </div>
+        </div>
       </div>
-      {<GoogleTranslate />}
-      <div id="content" className="mt-8 w-full"
-      style={{
-        transform: `scale(${zoomLevel})`,
-        transformOrigin: 'top center',  // Makes sure zoom happens from the top-left
-        transition: 'transform 0.3s ease'  // Smooth zoom effect
-      }} >
-        {content &&  <div><div dangerouslySetInnerHTML={{ __html: content }} /></div>}
+
+      {/* Content Area */}
+      <div
+        id="content"
+        className="flex-grow overflow-auto mt-4 p-4"
+        style={{
+          transform: `scale(${zoomLevel})`,
+          transformOrigin: "top center",
+          transition: "transform 0.3s ease",
+        }}
+      >
+        {content && (
+          <div>
+            <div dangerouslySetInnerHTML={{ __html: content }} />
+          </div>
+        )}
       </div>
-      {/* Popup for displaying translations or summaries */}
+
+      {/* Popup */}
       {isPopupVisible && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded shadow-lg relative mx-4 md:mx-0 md:w-3/4 lg:w-3/4">
             <h2 className="text-lg font-bold">Output</h2>
             <p>{popupContent}</p>
-            <button onClick={closePopup} className="mt-4 bg-gray-200 p-2 rounded">
+            <button
+              onClick={closePopup}
+              className="mt-4 bg-gray-200 p-2 rounded"
+            >
               Close
             </button>
           </div>
