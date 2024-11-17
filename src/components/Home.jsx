@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import langConfig from "../config/langConfig.json";
 import GoogleTranslate from "./GoogleTranslate";
+import Loader from './Loader'; 
 
 const Home = () => {
   const [url, setUrl] = useState("");
@@ -11,6 +12,7 @@ const Home = () => {
   const [previewZoom, setPreviewZoom] = useState(1);  
   const [popupContent, setPopupContent] = useState(""); 
   const [isPopupVisible, setIsPopupVisible] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false); 
 
   const langRef = useRef(language);
   useEffect(() => {
@@ -34,6 +36,7 @@ const Home = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (url) {
+      setIsLoading(true);
       fetchContent(url);
     }
   };
@@ -147,6 +150,8 @@ const Home = () => {
 
   const fetchContent = async (url) => {
     try {
+      setContent("");
+      setIsLoading(true);
       const response = await fetch("http://localhost:5000/", {
         method: "POST",
         headers: {
@@ -159,11 +164,16 @@ const Home = () => {
     } catch (error) {
       console.error("Error fetching content:", error);
     }
+    finally {
+      setIsLoading(false); // Set loading to false when content is fetched
+    }
   };
 
   // Function to send the image source to the backend for description
   const getImageDescription = async (imageUrl) => {
     try {
+      setIsPopupVisible(true);
+      setIsLoading(true)
       const lang = document.querySelector("html").getAttribute("lang");
       const response = await fetch("http://localhost:5000/process-image", {
         method: "POST",
@@ -178,6 +188,9 @@ const Home = () => {
       setIsPopupVisible(true);
     } catch (error) {
       console.error("Error sending image for description:", error);
+    }
+    finally {
+      setIsLoading(false); // Set loading to false when content is fetched
     }
   };
 
@@ -465,14 +478,14 @@ const Home = () => {
         transformOrigin: 'top center',  // Makes sure zoom happens from the top-left
         transition: 'transform 0.3s ease'  // Smooth zoom effect
       }} >
-        {content &&  <div><div dangerouslySetInnerHTML={{ __html: content }} /></div>}
+        {!content && isLoading ? <Loader />: <div><div dangerouslySetInnerHTML={{ __html: content }} /></div>}
       </div>
       {/* Popup for displaying translations or summaries */}
       {isPopupVisible && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded shadow-lg relative mx-4 md:mx-0 md:w-3/4 lg:w-3/4">
             <h2 className="text-lg font-bold">Output</h2>
-            <p>{popupContent}</p>
+            {isLoading ? <p>Loading...</p> :<p>{popupContent}</p> }
             <button onClick={closePopup} className="mt-4 bg-gray-200 p-2 rounded">
               Close
             </button>
