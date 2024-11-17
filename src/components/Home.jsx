@@ -260,30 +260,6 @@ const Home = () => {
         }
       };
 
-      // Create the translate button
-      const translateButton = document.createElement("button");
-      translateButton.innerHTML = `🌐 ${actionRef.current[2]}`;
-      translateButton.classList.add(
-        "translate",
-        "ml-2",
-        "cursor-pointer",
-        "text-green-600",
-        "hover:text-green-800",
-        "bg-green-100",
-        "px-3",
-        "py-1",
-        "rounded",
-        "transition",
-        "duration-200",
-        "ease-in-out"
-      );
-      translateButton.onclick = async function () {
-        await translateParagraph(
-          element.innerText,
-          langRef.current.slice(0, 2)
-        );
-      };
-
     // Adding summary button
     const summaryButton = document.createElement("button");
     summaryButton.innerHTML = `📝 Show Summary`;
