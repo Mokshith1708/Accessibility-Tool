@@ -19,20 +19,24 @@ These groups face real barriers to accessing essential information, and existing
 
 ## Key Features (Implemented for Phase-1)
 
-1. **Auto-Generate Summarized Reports**: 
+1. **Auto-Generate Summarized Reports**:  
    Automatically generates simplified summaries of web content tailored to specific user groups (e.g., elderly, children, uneducated individuals).
 
-2. **Audio Narration**: 
+2. **Audio Narration**:  
    Converts text to speech, making content accessible through narration for users who prefer or require audio, such as the elderly or visually impaired.
    
-3. **Multi-Lingual Support**: 
+3. **Multi-Lingual Support**:  
    Translates content into multiple languages, enabling users to access information in their preferred language. (10 languages)
    
-4. **Voice Commands**: 
+4. **Voice Commands**:  
    Allows users to navigate the software using voice commands, making it easier for elderly or visually impaired users to interact with the system.
    
-5. **Image Description**: 
+5. **Image Description**:  
    Automatically generates descriptive text for images, enhancing accessibility for users with visual impairments.
+   
+6. **Enhanced Viewing Experience (Zoom In and Zoom Out Feature)**:  
+   Our website now includes a zoom in and zoom out feature to enhance your browsing experience. This allows you to adjust content size for easier reading and viewing of details, providing flexibility and accessibility for all users. Simply zoom in for a closer look or zoom out to see more at once—making navigation smoother and more user-friendly.
+
    
 
 ## System Requirements
