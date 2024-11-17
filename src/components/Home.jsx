@@ -1,22 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import langConfig from "../config/langConfig.json";
 import GoogleTranslate from "./GoogleTranslate";
-import Modal from "./Modal";
 
 const Home = () => {
   const [url, setUrl] = useState("");
   const [content, setContent] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [language, setLanguage] = useState("en");
-<<<<<<< HEAD
   const [zoomLevel, setZoomLevel] = useState(1); 
   const [previewZoom, setPreviewZoom] = useState(1);  
   const [popupContent, setPopupContent] = useState(""); 
   const [isPopupVisible, setIsPopupVisible] = useState(false); 
-=======
-  const [modalOpen, setModalOpen] = useState(false);
-  const [imageDescription, setImageDescription] = useState("");
->>>>>>> 3306eaa37c8c620870bd12befc534c1d31d3cdb3
 
   const langRef = useRef(language);
   useEffect(() => {
@@ -178,15 +172,10 @@ const Home = () => {
         },
         body: JSON.stringify({ image: imageUrl }), // Send the image URL as payload
       });
-<<<<<<< HEAD
       const data = await response.json();
       console.log(data);
       setPopupContent(data.description)
       setIsPopupVisible(true);
-=======
-      setImageDescription(description);
-      setModalOpen(true);
->>>>>>> 3306eaa37c8c620870bd12befc534c1d31d3cdb3
     } catch (error) {
       console.error("Error sending image for description:", error);
     }
@@ -469,7 +458,6 @@ const Home = () => {
                     </ul>
                   </div>
       </div>
-<<<<<<< HEAD
       {<GoogleTranslate />}
       <div id="content" className="mt-8 w-full"
       style={{
@@ -491,13 +479,6 @@ const Home = () => {
           </div>
         </div>
       )}
-=======
-      <Modal
-          isOpen={modalOpen}
-          content={imageDescription}
-          onClose={() => setModalOpen(false)}
-      />
->>>>>>> 3306eaa37c8c620870bd12befc534c1d31d3cdb3
     </div>
   );
 };
