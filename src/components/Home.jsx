@@ -152,7 +152,7 @@ const Home = () => {
     try {
       setContent("");
       setIsLoading(true);
-      const response = await fetch("http://localhost:5000/", {
+      const response = await fetch("https://accessibility-tool-rosy.vercel.app/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -175,7 +175,7 @@ const Home = () => {
       setIsPopupVisible(true);
       setIsLoading(true)
       const lang = document.querySelector("html").getAttribute("lang");
-      const response = await fetch("http://localhost:5000/process-image", {
+      const response = await fetch("https://accessibility-tool-rosy.vercel.app/process-image", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -197,7 +197,7 @@ const Home = () => {
   // New function to get summary
   const getSummary = async (text) => {
     try {
-      const response = await fetch("http://localhost:5000/summarize", {
+      const response = await fetch("https://accessibility-tool-rosy.vercel.app/summarize", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
