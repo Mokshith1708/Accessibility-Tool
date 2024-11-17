@@ -2,27 +2,30 @@ import React, { useState, useEffect, useRef } from "react";
 import langConfig from "../config/langConfig.json";
 import GoogleTranslate from "./GoogleTranslate";
 
-
 const Home = () => {
   const [url, setUrl] = useState("");
   const [content, setContent] = useState("");
   const [isListening, setIsListening] = useState(false);
-  const [language, setLanguage] = useState("en-US");
-  const [popupContent, setPopupContent] = useState(""); // State to manage popup content
-  const [isPopupVisible, setIsPopupVisible] = useState(false); // State for popup visibility
+  const [language, setLanguage] = useState("en");
 
   const langRef = useRef(language);
-  const actionRef = useRef(langConfig[language].actions);
   useEffect(() => {
     langRef.current = language;
-    console.log(actionRef.current)
-    actionRef.current = langConfig[language].actions;
   }, [language]);
 
+  // Initialize Speech Recognition
   const recognition = new (window.SpeechRecognition ||
     window.webkitSpeechRecognition)();
   recognition.interimResults = false; // Get only final results
-  recognition.lang = language; // Set language
+
+  // Function to update the recognition language
+  const updateRecognitionLanguage = () => {
+    const docLang = document.documentElement.lang || "en"; // Default to "en" if lang is not set
+    recognition.lang = docLang;
+    recognition.interimResults = false;
+    setLanguage(docLang);
+    console.log(`Speech recognition language set to: ${docLang}`);
+  };
 
   let inactivityTimer;
 
@@ -33,18 +36,49 @@ const Home = () => {
     }
   };
 
-  const startListening = () => {
-    console.log("Starting recognition in language:", language);
-    recognition.start();
-    resetInactivityTimer();
+  // Function to show toast notification with animation
+  const showToast = (message) => {
+    // Create a toast div element
+    const toast = document.createElement("div");
+    toast.innerText = message;
+    toast.classList.add(
+      "toast",
+      "fixed",
+      "bottom-4",
+      "right-4",
+      "px-6",
+      "py-3",
+      "bg-blue-500",
+      "text-white",
+      "rounded-lg",
+      "shadow-lg",
+      "opacity-0",
+      "translate-y-10", // Initially position below
+      "transition-all",
+      "duration-500",
+      "ease-in-out",
+      "transform"
+    );
+
+    // Append the toast to the body
+    document.body.appendChild(toast);
+
+    // Trigger animation to slide in from the bottom
+    setTimeout(() => {
+      toast.classList.remove("opacity-0", "translate-y-10"); // Slide in
+      toast.classList.add("opacity-100", "translate-y-0"); // Final position
+    }, 10); // Trigger after a very short delay
+
+    // Remove the toast after 3 seconds
+    setTimeout(() => {
+      toast.classList.remove("opacity-100", "translate-y-0"); // Slide out
+      toast.classList.add("opacity-0", "translate-y-10"); // Move back down
+      setTimeout(() => toast.remove(), 500); // Remove after fade-out completes
+    }, 3000); // Adjust this time to control how long the toast is shown
   };
 
-  const stopListening = () => {
-    console.log("Stopping recognition");
-    setIsListening(false);
-    recognition.stop();
-    clearTimeout(inactivityTimer);
-  };
+  let recognitionTimeout; // Timeout variable to track inactivity
+  const TIMEOUT_DURATION = 10000; // 20 seconds timeout
 
   recognition.onresult = (event) => {
     const command = event.results[0][0].transcript.toLowerCase();
@@ -59,9 +93,43 @@ const Home = () => {
     }, 500);
   };
 
+  // Reset the inactivity timer every time a new result is recognized
+  const resetInactivityTimer = () => {
+    // Clear any existing timeout
+    clearTimeout(recognitionTimeout);
+
+    // Set a new timeout to stop recognition after TIMEOUT_DURATION if no result is recognized
+    recognitionTimeout = setTimeout(() => {
+      console.log("No result detected within 20 seconds, stopping recognition");
+      setIsListening(false);
+      recognition.stop(); // Stop recognition after the timeout
+      showToast("Speech recognition stopped due to inactivity");
+    }, TIMEOUT_DURATION);
+  };
+
+  // Start listening
+  const startListening = () => {
+    updateRecognitionLanguage();
+    recognition.start();
+    resetInactivityTimer(); // Start the inactivity timer when recognition starts
+    setIsListening(true);
+    showToast("Speech recognition started");
+  };
+
+  // Stop listening
+  const stopListening = () => {
+    console.log("Stopping recognition");
+    setIsListening(false);
+    recognition.stop();
+    clearTimeout(recognitionTimeout); // Clear the inactivity timeout
+    showToast("Speech recognition stopped");
+  };
+
   const handleCommand = (command) => {
     // Get the commands for the current language
-    const langCommands = langConfig[language].commands;
+    // console.log("langRef.curr: ",langRef.current);
+    const langCommands = langConfig[langRef.current].commands;
+    // console.log(langCommands);
 
     if (langCommands) {
       // Check for scroll down command
@@ -73,18 +141,6 @@ const Home = () => {
         window.scrollBy(0, -100); // Scroll up
       }
     }
-  };
-
-  const resetInactivityTimer = () => {
-    clearTimeout(inactivityTimer);
-    inactivityTimer = setTimeout(() => {
-      console.log("Stopping recognition after 30 seconds of inactivity");
-      stopListening();
-    }, 30000);
-  };
-
-  const handleLanguageChange = (e) => {
-    setLanguage(e.target.value);
   };
 
   const fetchContent = async (url) => {
@@ -106,6 +162,7 @@ const Home = () => {
   // Function to send the image source to the backend for description
   const getImageDescription = async (imageUrl) => {
     try {
+      const lang = document.querySelector("html").getAttribute("lang");
       const response = await fetch("http://localhost:5000/process-image", {
         method: "POST",
         headers: {
@@ -114,32 +171,11 @@ const Home = () => {
         body: JSON.stringify({ image: imageUrl }), // Send the image URL as payload
       });
       const data = await response.json();
-      await translateParagraph(data.description, langRef.current.slice(0, 2));
+      return data;
     } catch (error) {
       console.error("Error sending image for description:", error);
     }
   };
-
-
-  const translateParagraph = async (text, targetLanguage) => {
-    try {
-      const response = await fetch("http://localhost:5000/translate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ text, target_lang: targetLanguage }),
-      });
-      //const translatedText = await response.text();
-      console.log("text",text)
-      // Show popup after translation
-      setPopupContent(text); // Set the content for the popup
-      setIsPopupVisible(true); // Show the popup
-    } catch (error) {
-      console.error("Error translating text:", error);
-    }
-  };
-
 
   // New function to get summary
   const getSummary = async (text) => {
@@ -151,15 +187,9 @@ const Home = () => {
         },
         body: JSON.stringify({ text }),
       });
-      console.log("text to summa ");
-      console.log(text);
-      console.log("-------------");
-      
+
       const res = await response.text();
-      await translateParagraph(
-        res,
-        'en'
-      );
+      return res;
     } catch (error) {
       console.error("Error summarizing text:", error);
     }
@@ -169,11 +199,10 @@ const Home = () => {
     // Remove existing buttons, if any
     const existingButtons = document.querySelectorAll("button");
     existingButtons.forEach((btn) => {
-      if (!['start', 'stop', 'fetch'].includes(btn.id)) {
+      if (!["speech", "fetch"].includes(btn.id)) {
         btn.remove();
       }
     });
-    
 
     // Select all relevant text-containing elements (paragraphs)
     const textElements = document.querySelectorAll("#content p");
@@ -181,7 +210,7 @@ const Home = () => {
     textElements.forEach((element) => {
       // Create the speaker button
       const speakerButton = document.createElement("button");
-      speakerButton.innerHTML = `🔊 ${actionRef.current[1]}`;
+      speakerButton.innerHTML = `🔊 Read`;
       speakerButton.classList.add(
         "speaker",
         "ml-2",
@@ -196,13 +225,38 @@ const Home = () => {
         "duration-200",
         "ease-in-out"
       );
+
+      // State to toggle between reading and stopping
+      let isReading = false;
+
       speakerButton.onclick = function () {
         if ("speechSynthesis" in window) {
-          window.speechSynthesis.cancel();
-          var msg = new SpeechSynthesisUtterance();
-          msg.text = element.innerText; // Use innerText of the element
-          msg.lang = langRef.current; // Set the desired language
-          window.speechSynthesis.speak(msg);
+          if (isReading) {
+            // Stop speech synthesis
+            window.speechSynthesis.cancel();
+            isReading = false;
+            speakerButton.innerHTML = `🔊 Read`; // Update button text
+          } else {
+            // Start speech synthesis
+            const msg = new SpeechSynthesisUtterance();
+            msg.text = element.innerText; // Ensure `element` contains the desired text
+            msg.onend = function () {
+              // Reset button when speech finishes
+              isReading = false;
+              speakerButton.innerHTML = `🔊 Read`;
+            };
+            msg.onerror = function () {
+              // Handle speech errors
+              // alert("An error occurred during text-to-speech.");
+              isReading = false;
+              speakerButton.innerHTML = `🔊 Read`;
+            };
+            window.speechSynthesis.speak(msg);
+            isReading = true;
+            speakerButton.innerHTML = `🛑 Stop`; // Update button text
+          }
+        } else {
+          alert("Your browser does not support speech synthesis.");
         }
       };
 
@@ -308,9 +362,7 @@ const Home = () => {
 
       // Append the buttons after the paragraph element
       element.insertAdjacentElement("afterend", speakerButton);
-      element.insertAdjacentElement("afterend", translateButton);
       element.insertAdjacentElement("afterend", summaryButton);
-
       // Add a class to indicate buttons have been added
       element.classList.add("speaker-added");
     });
@@ -320,7 +372,7 @@ const Home = () => {
 
     images.forEach((img) => {
       const starButton = document.createElement("button");
-      starButton.innerHTML = `⭐ ${actionRef.current[0]}`; // Star button text
+      starButton.innerHTML = `⭐ Describe`; // Star button text
       starButton.classList.add(
         "star-button",
         "ml-2",
@@ -347,12 +399,6 @@ const Home = () => {
     });
   };
 
-  const closePopup = () => {
-    setIsPopupVisible(false); // Close the popup
-  };
-
-
-
   useEffect(() => {
     if (content) {
       addButtons();
@@ -361,9 +407,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-8">
-      <h1 className="text-3xl font-bold mb-4 text-center">
-        Accezy
-      </h1>
+      <h1 className="text-3xl font-bold mb-4 text-center">Accezy</h1>
 
       <form onSubmit={handleSubmit} className="w-full max-w-lg">
         <div className="flex items-center border-b border-teal-500 py-2">
@@ -383,60 +427,28 @@ const Home = () => {
           </button>
         </div>
         <div className="mt-2 flex items-center justify-center">
-        <button
-            id="start"
-            type="button"
-            onClick={startListening}
-            className="ml-2 flex-shrink-0 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
-          >
-            🎤 Start Listening
-          </button>
           <button
-            id="stop"
             type="button"
-            onClick={stopListening}
-            className="ml-2 flex-shrink-0 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+            id="speech"
+            onClick={isListening ? stopListening : startListening}
+            className={`ml-2 flex-shrink-0 ${
+              isListening
+                ? "bg-red-500 hover:bg-red-700"
+                : "bg-blue-500 hover:bg-blue-700"
+            } text-white font-bold py-1 px-2 rounded`}
           >
-            🛑 Stop Listening
+            {isListening ? "🛑 Stop Listening" : "🎤 Start Listening"}
           </button>
-          </div>
-        <div className="flex mt-2 items-center justify-center">
-          <select
-            value={language}
-            onChange={handleLanguageChange}
-            className="bg-white border rounded py-2 px-4 mr-2"
-          >
-            <option value="en-US">English (US)</option>
-            <option value="hi-IN">Hindi</option>
-            <option value="te-IN">Telugu</option>
-            <option value="ta-IN">Tamil</option>
-            <option value="kn-IN">Kannada</option>
-            <option value="ml-IN">Malayalam</option>
-            <option value="gu-IN">Gujarathi</option>
-            <option value="bn-IN">Bengali</option>
-            <option value="mr-IN">Marathi</option>
-            <option value="pa-IN">Punjabi</option>
-          </select>
         </div>
       </form>
-
+      {<GoogleTranslate />}
       <div id="content" className="mt-8 w-full">
-
-        {content &&  <div><GoogleTranslate /><div dangerouslySetInnerHTML={{ __html: content }} /></div>}
-      </div>
-
-      {/* Popup for displaying translations or summaries */}
-      {isPopupVisible && (
-        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded shadow-lg relative mx-4 md:mx-0 md:w-3/4 lg:w-3/4">
-            <h2 className="text-lg font-bold">Output</h2>
-            <p>{popupContent}</p>
-            <button onClick={closePopup} className="mt-4 bg-gray-200 p-2 rounded">
-              Close
-            </button>
+        {content && (
+          <div>
+            <div dangerouslySetInnerHTML={{ __html: content }} />
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
