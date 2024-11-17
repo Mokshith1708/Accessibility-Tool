@@ -96,10 +96,12 @@ Once the system is running, access the web interface to interact with web conten
 - After giving the link of the website you will be redirected to that website with our toold running on it. There we will have different options like:
     - First we can select the language in which we want our website to use in furthur features.
     - For every paragraph we will be having a speaker which speaks out the content.
-    - We will also have a translator button for every paragraph on clicking which gives the content in the selected language.
+    - We will also have a translator button on clicking which gives the content in the selected language.
     - We also have a summarize button for every paragraph on clicking which gives the summarized content.
     - Every picture will have a star symbol on clicking which gives the description of the pisture
     - We also have a voice command which can be used to give commands in different languages. But for now we have limited commands. Also please make sure that the command has the given words. (Only Scroll-up and Scroll-down for now).
+    - We have a scroll bar which can be used for zooming in and out.
+    - Also we have a instruction box which specifies all the functionalities that cn be performed.
         -  "en-US": {
             "scroll_down": ["scroll down"],
             "scroll_up": ["scroll up"]
@@ -146,14 +148,6 @@ Once the system is running, access the web interface to interact with web conten
 - Note:
     - After clicking the summarizer button we need to wait for some time before the summary is displayed as the model takes some time to generate the summary. Same case will translate but it is much faster than the summarizer.
 
-## Future Enhancements
-
-- **Advanced AI Models**: Improving the accuracy of language simplification and image descriptions.
-- **Expanded Language Support**: Increasing the range of supported languages.
-- **New Features**: New features like glossary generation, infographics generation, audio amplification and more.
-- Add more voice commands.
-- Enhance UI/UX.
-- Make the speaker speak in different languages.
  
 
 ## Team Members
